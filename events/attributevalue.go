@@ -119,11 +119,74 @@ func (av DynamoDBAttributeValue) DataType() DynamoDBDataType {
 	return av.dataType
 }
 
+// NewBinaryAttribute creates an DynamoDBAttributeValue containing a Binary
+func NewBinaryAttribute(value []byte) DynamoDBAttributeValue {
+	var av DynamoDBAttributeValue
+	av.value = value
+	av.dataType = DataTypeBinary
+	return av
+}
+
+// NewBooleanAttribute creates an DynamoDBAttributeValue containing a Boolean
+func NewBooleanAttribute(value bool) DynamoDBAttributeValue {
+	var av DynamoDBAttributeValue
+	av.value = value
+	av.dataType = DataTypeBoolean
+	return av
+}
+
+// NewBinarySetAttribute creates an DynamoDBAttributeValue containing a BinarySet
+func NewBinarySetAttribute(value [][]byte) DynamoDBAttributeValue {
+	var av DynamoDBAttributeValue
+	av.value = value
+	av.dataType = DataTypeBinarySet
+	return av
+}
+
+// NewListAttribute creates an DynamoDBAttributeValue containing a List
+func NewListAttribute(value []DynamoDBAttributeValue) DynamoDBAttributeValue {
+	var av DynamoDBAttributeValue
+	av.value = value
+	av.dataType = DataTypeList
+	return av
+}
+
+// NewMapAttribute creates an DynamoDBAttributeValue containing a Map
+func NewMapAttribute(value map[string]DynamoDBAttributeValue) DynamoDBAttributeValue {
+	var av DynamoDBAttributeValue
+	av.value = value
+	av.dataType = DataTypeMap
+	return av
+}
+
+// NewNumberAttribute creates an DynamoDBAttributeValue containing a Number
+func NewNumberAttribute(value string) DynamoDBAttributeValue {
+	var av DynamoDBAttributeValue
+	av.value = value
+	av.dataType = DataTypeNumber
+	return av
+}
+
+// NewNullAttribute creates an DynamoDBAttributeValue containing a Null
+func NewNullAttribute() DynamoDBAttributeValue {
+	var av DynamoDBAttributeValue
+	av.dataType = DataTypeNull
+	return av
+}
+
 // NewStringAttribute creates an DynamoDBAttributeValue containing a String
 func NewStringAttribute(value string) DynamoDBAttributeValue {
 	var av DynamoDBAttributeValue
 	av.value = value
 	av.dataType = DataTypeString
+	return av
+}
+
+// NewStringSetAttribute creates an DynamoDBAttributeValue containing a StringSet
+func NewStringSetAttribute(value []string) DynamoDBAttributeValue {
+	var av DynamoDBAttributeValue
+	av.value = value
+	av.dataType = DataTypeStringSet
 	return av
 }
 
@@ -280,7 +343,7 @@ func unmarshalBinarySet(target *DynamoDBAttributeValue, value interface{}) error
 		return errors.New("DynamoDBAttributeValue: BS type should contain a list of base64 strings")
 	}
 
-	binarySet := make([][]byte, len(list), len(list))
+	binarySet := make([][]byte, len(list))
 
 	for index, element := range list {
 		var err error
@@ -302,7 +365,7 @@ func unmarshalList(target *DynamoDBAttributeValue, value interface{}) error {
 		return errors.New("DynamoDBAttributeValue: L type should contain a list")
 	}
 
-	DynamoDBAttributeValues := make([]DynamoDBAttributeValue, len(list), len(list))
+	DynamoDBAttributeValues := make([]DynamoDBAttributeValue, len(list))
 	for index, element := range list {
 
 		elementMap, ok := element.(map[string]interface{})
@@ -364,7 +427,7 @@ func unmarshalNumberSet(target *DynamoDBAttributeValue, value interface{}) error
 		return errors.New("DynamoDBAttributeValue: NS type should contain a list of strings")
 	}
 
-	numberSet := make([]string, len(list), len(list))
+	numberSet := make([]string, len(list))
 
 	for index, element := range list {
 		numberSet[index], ok = element.(string)
@@ -384,7 +447,7 @@ func unmarshalStringSet(target *DynamoDBAttributeValue, value interface{}) error
 		return errors.New("DynamoDBAttributeValue: SS type should contain a list of strings")
 	}
 
-	stringSet := make([]string, len(list), len(list))
+	stringSet := make([]string, len(list))
 
 	for index, element := range list {
 		stringSet[index], ok = element.(string)
