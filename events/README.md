@@ -1,10 +1,18 @@
 # Overview
 
+[![GoDoc](https://godoc.org/github.com/aws/aws-lambda-go/events?status.svg)](https://godoc.org/github.com/aws/aws-lambda-go/events)
+
 This package provides input types for Lambda functions that process AWS events.
 
 # Samples
 
 [API Gateway](README_ApiGatewayEvent.md)
+
+[API Gateway Custom Authorizer](README_ApiGatewayCustomAuthorizer.md)
+
+[CloudFormation Events](../cfn/README.md)
+
+[Code Commit Events](README_CodeCommit.md)
 
 [Cognito Events](README_Cognito.md)
 
@@ -19,3 +27,5 @@ This package provides input types for Lambda functions that process AWS events.
 [S3 Events](README_S3.md)
 
 [SNS Events](README_SNS.md)
+
+[SQS Events](README_SQS.md)

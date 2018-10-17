@@ -9,6 +9,10 @@ import (
 	"reflect"
 )
 
+type Handler interface {
+	Invoke(ctx context.Context, payload []byte) ([]byte, error)
+}
+
 // lambdaHandler is the generic function type
 type lambdaHandler func(context.Context, []byte) (interface{}, error)
 
@@ -58,7 +62,7 @@ func validateReturns(handler reflect.Type) error {
 		if !handler.Out(1).Implements(errorType) {
 			return fmt.Errorf("handler returns two values, but the second does not implement error")
 		}
-	} else {
+	} else if handler.NumOut() == 1 {
 		if !handler.Out(0).Implements(errorType) {
 			return fmt.Errorf("handler returns a single value, but it does not implement error")
 		}

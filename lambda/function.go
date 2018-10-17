@@ -13,7 +13,7 @@ import (
 )
 
 type Function struct {
-	handler lambdaHandler
+	handler Handler
 }
 
 func (fn *Function) Ping(req *messages.PingRequest, response *messages.PingResponse) error {
@@ -41,6 +41,10 @@ func (fn *Function) Invoke(req *messages.InvokeRequest, response *messages.Invok
 	lc := &lambdacontext.LambdaContext{
 		AwsRequestID:       req.RequestId,
 		InvokedFunctionArn: req.InvokedFunctionArn,
+		Identity: lambdacontext.CognitoIdentity{
+			CognitoIdentityID:     req.CognitoIdentityId,
+			CognitoIdentityPoolID: req.CognitoIdentityPoolId,
+		},
 	}
 	if len(req.ClientContext) > 0 {
 		if err := json.Unmarshal(req.ClientContext, &lc.ClientContext); err != nil {
@@ -62,11 +66,11 @@ func (fn *Function) Invoke(req *messages.InvokeRequest, response *messages.Invok
 }
 
 func getErrorType(err interface{}) string {
-	if errorType := reflect.TypeOf(err); errorType.Kind() == reflect.Ptr {
+	errorType := reflect.TypeOf(err)
+	if errorType.Kind() == reflect.Ptr {
 		return errorType.Elem().Name()
-	} else {
-		return errorType.Name()
 	}
+	return errorType.Name()
 }
 
 func lambdaErrorResponse(invokeError error) *messages.InvokeResponse_Error {
